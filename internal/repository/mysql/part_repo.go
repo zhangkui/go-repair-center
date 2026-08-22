@@ -1,0 +1,15 @@
+package mysql
+
+import (
+ "context"
+ "database/sql"
+ "errors"
+ "go-repair-center/internal/repository"
+)
+
+var ErrInsufficientStock=errors.New("insufficient stock")
+type PartRepository struct{*CRUD;db *sql.DB;manager *DB}
+func NewPartRepository(db *sql.DB)*PartRepository{return &PartRepository{CRUD:NewCRUD(db,"parts",[]string{"code","name","specification"},[]string{"code","name","specification","unit","unit_price","stock_quantity","safety_stock","status"}),db:db,manager:NewDB(db)}}
+func(r *PartRepository)UseStock(ctx context.Context,tx *sql.Tx,partID int64,quantity int,executionID int64,userID int64,key string)(repository.Record,error){if quantity<=0{return nil,errors.New("quantity must be positive")};var stock int;var price float64;if err:=tx.QueryRowContext(ctx,"SELECT stock_quantity,unit_price FROM parts WHERE id=? AND deleted_at IS NULL FOR UPDATE",partID).Scan(&stock,&price);err!=nil{return nil,err};if stock<quantity{return nil,ErrInsufficientStock};after:=stock-quantity;if _,err:=tx.ExecContext(ctx,"UPDATE parts SET stock_quantity=?,updated_at=NOW() WHERE id=?",after,partID);err!=nil{return nil,err};result,err:=tx.ExecContext(ctx,"INSERT INTO part_usage_records(repair_execution_id,part_id,quantity,unit_price,used_by,idempotency_key) VALUES(?,?,?,?,?,?)",executionID,partID,quantity,price,userID,key);if err!=nil{return nil,err};usageID,_:=result.LastInsertId();if _,err=tx.ExecContext(ctx,"INSERT INTO part_stock_logs(part_id,change_type,quantity_before,change_quantity,quantity_after,reference_type,reference_id,operator_id,remark) VALUES(?,'OUT',?, ?,?,'REPAIR_USAGE',?,?,?)",partID,stock,-quantity,after,usageID,userID,"维修领用");err!=nil{return nil,err};return repository.Record{"id":usageID,"part_id":partID,"quantity":quantity,"unit_price":price,"stock_after":after},nil}
+func(r *PartRepository)AdjustStock(ctx context.Context,partID int64,delta int,reason string,userID int64)(repository.Record,error){var out repository.Record;err:=r.manager.WithinTransaction(ctx,func(tx *sql.Tx)error{var before int;if err:=tx.QueryRowContext(ctx,"SELECT stock_quantity FROM parts WHERE id=? AND deleted_at IS NULL FOR UPDATE",partID).Scan(&before);err!=nil{return err};after:=before+delta;if after<0{return ErrInsufficientStock};if _,err:=tx.ExecContext(ctx,"UPDATE parts SET stock_quantity=?,updated_at=NOW() WHERE id=?",after,partID);err!=nil{return err};kind:="IN";if delta<0{kind="OUT"};if _,err:=tx.ExecContext(ctx,"INSERT INTO part_stock_logs(part_id,change_type,quantity_before,change_quantity,quantity_after,reference_type,operator_id,remark) VALUES(?,?,?,?,?,'ADJUSTMENT',?,?)",partID,kind,before,delta,after,userID,reason);err!=nil{return err};out=repository.Record{"part_id":partID,"quantity_before":before,"change_quantity":delta,"quantity_after":after};return nil});return out,err}
+func(r *PartRepository)WithTransaction(ctx context.Context,fn func(*sql.Tx)error)error{return r.manager.WithinTransaction(ctx,fn)}

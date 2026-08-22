@@ -1,0 +1,60 @@
+CREATE TABLE IF NOT EXISTS repair_executions (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  repair_order_id BIGINT UNSIGNED NOT NULL,
+  technician_id BIGINT UNSIGNED NOT NULL,
+  fault_code_id BIGINT UNSIGNED NULL,
+  diagnosis TEXT NOT NULL,
+  started_at DATETIME NULL,
+  completed_at DATETIME NULL,
+  status VARCHAR(32) NOT NULL DEFAULT 'PENDING',
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at DATETIME NULL,
+  PRIMARY KEY (id),
+  UNIQUE KEY uk_repair_executions_order_id (repair_order_id),
+  KEY idx_repair_executions_status (status),
+  KEY idx_repair_executions_fault_code_id (fault_code_id),
+  KEY idx_repair_executions_deleted_at (deleted_at),
+  CONSTRAINT fk_repair_executions_order FOREIGN KEY (repair_order_id) REFERENCES repair_orders(id) ON DELETE RESTRICT,
+  CONSTRAINT fk_repair_executions_technician FOREIGN KEY (technician_id) REFERENCES users(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS repair_procedures (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  repair_execution_id BIGINT UNSIGNED NOT NULL,
+  name VARCHAR(100) NOT NULL,
+  sequence INT NOT NULL DEFAULT 1,
+  description TEXT NOT NULL,
+  standard_minutes INT NOT NULL DEFAULT 0,
+  technician_id BIGINT UNSIGNED NULL,
+  started_at DATETIME NULL,
+  ended_at DATETIME NULL,
+  actual_minutes INT NOT NULL DEFAULT 0,
+  result VARCHAR(32) NOT NULL DEFAULT 'PENDING',
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at DATETIME NULL,
+  PRIMARY KEY (id),
+  KEY idx_repair_procedures_execution_id (repair_execution_id),
+  KEY idx_repair_procedures_sequence (sequence),
+  CONSTRAINT fk_repair_procedures_execution FOREIGN KEY (repair_execution_id) REFERENCES repair_executions(id) ON DELETE RESTRICT,
+  CONSTRAINT fk_repair_procedures_technician FOREIGN KEY (technician_id) REFERENCES users(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS repair_test_records (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  repair_execution_id BIGINT UNSIGNED NOT NULL,
+  test_item VARCHAR(100) NOT NULL,
+  result VARCHAR(32) NOT NULL DEFAULT 'PENDING',
+  tester_id BIGINT UNSIGNED NOT NULL,
+  tested_at DATETIME NOT NULL,
+  notes VARCHAR(255) NOT NULL DEFAULT '',
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at DATETIME NULL,
+  PRIMARY KEY (id),
+  KEY idx_repair_test_records_execution_id (repair_execution_id),
+  KEY idx_repair_test_records_tester_id (tester_id),
+  CONSTRAINT fk_repair_test_records_execution FOREIGN KEY (repair_execution_id) REFERENCES repair_executions(id) ON DELETE RESTRICT,
+  CONSTRAINT fk_repair_test_records_tester FOREIGN KEY (tester_id) REFERENCES users(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

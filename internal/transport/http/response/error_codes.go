@@ -1,0 +1,2 @@
+package response
+const(CodeInternal=1000;CodeDatabase=1001;CodeRedis=1002;CodeInvalidParameter=2000;CodeValidation=2001;CodeNotFound=3000;CodeConflict=3001;CodeInvalidTransition=3002;CodeInsufficientStock=3003;CodeIdempotencyConflict=3004;CodeUnauthorized=4000;CodeForbidden=4001;CodeAccountDisabled=4002;CodeLoginLocked=4003)

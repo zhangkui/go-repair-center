@@ -1,0 +1,3 @@
+package database
+import("context";"database/sql";"fmt";"time";_ "github.com/go-sql-driver/mysql";"go-repair-center/internal/platform/config")
+func OpenMySQL(ctx context.Context,c *config.Config)(*sql.DB,error){db,e:=sql.Open("mysql",c.MySQLDSN());if e!=nil{return nil,e};db.SetMaxOpenConns(c.DBMaxOpenConns);db.SetMaxIdleConns(c.DBMaxIdleConns);db.SetConnMaxLifetime(c.DBConnMaxLifetime);for i:=0;i<30;i++{if e=db.PingContext(ctx);e==nil{return db,nil};select{case<-ctx.Done():return nil,ctx.Err();case<-time.After(2*time.Second):}};db.Close();return nil,fmt.Errorf("mysql unavailable: %w",e)}

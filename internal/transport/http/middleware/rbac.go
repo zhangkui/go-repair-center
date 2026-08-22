@@ -1,0 +1,4 @@
+package middleware
+import("net/http";"go-repair-center/internal/transport/http/response")
+func Require(permission string)func(http.Handler)http.Handler{return func(next http.Handler)http.Handler{return http.HandlerFunc(func(w http.ResponseWriter,r *http.Request){for _,owned:=range Permissions(r.Context()){if owned==permission||owned=="system:*"{next.ServeHTTP(w,r);return}};response.Error(w,403,response.CodeForbidden,"permission denied",RequestID(r.Context()))})}}
+func RequireAny(required ...string)func(http.Handler)http.Handler{return func(next http.Handler)http.Handler{return http.HandlerFunc(func(w http.ResponseWriter,r *http.Request){owned:=Permissions(r.Context());for _,candidate:=range required{for _,permission:=range owned{if permission==candidate||permission=="system:*"{next.ServeHTTP(w,r);return}}};response.Error(w,403,response.CodeForbidden,"permission denied",RequestID(r.Context()))})}}

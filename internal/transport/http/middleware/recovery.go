@@ -1,0 +1,3 @@
+package middleware
+import("fmt";"net/http";"runtime/debug";"github.com/sirupsen/logrus";"go-repair-center/internal/transport/http/response")
+func Recovery(log *logrus.Logger)func(http.Handler)http.Handler{return func(next http.Handler)http.Handler{return http.HandlerFunc(func(w http.ResponseWriter,r *http.Request){defer func(){if recovered:=recover();recovered!=nil{log.WithFields(logrus.Fields{"panic":fmt.Sprint(recovered),"stack":string(debug.Stack()),"request_id":RequestID(r.Context())}).Error("panic recovered");response.Error(w,500,response.CodeInternal,"internal server error",RequestID(r.Context()))}}();next.ServeHTTP(w,r)})}}

@@ -1,0 +1,60 @@
+CREATE TABLE IF NOT EXISTS customers (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name VARCHAR(100) NOT NULL,
+  phone VARCHAR(32) NOT NULL DEFAULT '',
+  address VARCHAR(255) NOT NULL DEFAULT '',
+  level VARCHAR(32) NOT NULL DEFAULT 'NORMAL',
+  remark VARCHAR(255) NOT NULL DEFAULT '',
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at DATETIME NULL,
+  PRIMARY KEY (id),
+  KEY idx_customers_name (name),
+  KEY idx_customers_level (level),
+  KEY idx_customers_deleted_at (deleted_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS devices (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  customer_id BIGINT UNSIGNED NOT NULL,
+  brand VARCHAR(100) NOT NULL DEFAULT '',
+  model VARCHAR(100) NOT NULL DEFAULT '',
+  serial_number VARCHAR(128) NOT NULL,
+  category VARCHAR(64) NOT NULL DEFAULT '',
+  appearance_photos TEXT NULL,
+  purchase_date DATE NULL,
+  purchase_channel VARCHAR(64) NOT NULL DEFAULT '',
+  purchase_price DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+  warranty_start DATE NULL,
+  warranty_end DATE NULL,
+  warranty_status VARCHAR(32) NOT NULL DEFAULT 'ACTIVE',
+  warranty_voucher VARCHAR(128) NOT NULL DEFAULT '',
+  status VARCHAR(32) NOT NULL DEFAULT 'NORMAL',
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at DATETIME NULL,
+  PRIMARY KEY (id),
+  UNIQUE KEY uk_devices_serial_number (serial_number),
+  KEY idx_devices_customer_id (customer_id),
+  KEY idx_devices_status (status),
+  KEY idx_devices_warranty_status (warranty_status),
+  KEY idx_devices_deleted_at (deleted_at),
+  CONSTRAINT fk_devices_customer FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS device_status_histories (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  device_id BIGINT UNSIGNED NOT NULL,
+  from_status VARCHAR(32) NOT NULL,
+  to_status VARCHAR(32) NOT NULL,
+  reason VARCHAR(255) NOT NULL DEFAULT '',
+  changed_by BIGINT UNSIGNED NOT NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at DATETIME NULL,
+  PRIMARY KEY (id),
+  KEY idx_device_status_histories_device_id (device_id),
+  KEY idx_device_status_histories_created_at (created_at),
+  CONSTRAINT fk_device_status_histories_device FOREIGN KEY (device_id) REFERENCES devices(id) ON DELETE RESTRICT,
+  CONSTRAINT fk_device_status_histories_user FOREIGN KEY (changed_by) REFERENCES users(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

@@ -1,0 +1,3 @@
+package middleware
+import("net";"net/http";"time";redisv9 "github.com/redis/go-redis/v9";"go-repair-center/internal/transport/http/response")
+func RateLimit(client *redisv9.Client,limit int,window time.Duration)func(http.Handler)http.Handler{return func(next http.Handler)http.Handler{return http.HandlerFunc(func(w http.ResponseWriter,r *http.Request){host,_,_:=net.SplitHostPort(r.RemoteAddr);if host==""{host=r.RemoteAddr};key:="rate:"+host;count,err:=client.Incr(r.Context(),key).Result();if err==nil&&count==1{_ = client.Expire(r.Context(),key,window).Err()};if err==nil&&count>int64(limit){response.Error(w,429,response.CodeLoginLocked,"too many requests",RequestID(r.Context()));return};next.ServeHTTP(w,r)})}}

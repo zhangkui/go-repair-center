@@ -1,0 +1,3 @@
+package redis
+import("context";"fmt";redisv9 "github.com/redis/go-redis/v9";"go-repair-center/internal/platform/config")
+func Open(ctx context.Context,c *config.Config)(*redisv9.Client,error){client:=redisv9.NewClient(&redisv9.Options{Addr:c.RedisAddress(),Password:c.RedisPassword,DB:c.RedisDB,PoolSize:c.RedisPoolSize});if e:=client.Ping(ctx).Err();e!=nil{client.Close();return nil,fmt.Errorf("redis unavailable: %w",e)};return client,nil}

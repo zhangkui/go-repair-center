@@ -1,0 +1,6 @@
+package middleware
+import("net/http";"time";"github.com/google/uuid";"github.com/sirupsen/logrus";"context")
+type statusWriter struct{http.ResponseWriter;status int;bytes int}
+func(w *statusWriter)WriteHeader(status int){w.status=status;w.ResponseWriter.WriteHeader(status)}
+func(w *statusWriter)Write(body []byte)(int,error){if w.status==0{w.status=200};n,e:=w.ResponseWriter.Write(body);w.bytes+=n;return n,e}
+func Logger(log *logrus.Logger)func(http.Handler)http.Handler{return func(next http.Handler)http.Handler{return http.HandlerFunc(func(w http.ResponseWriter,r *http.Request){started:=time.Now();id:=r.Header.Get("X-Request-ID");if id==""{id="req_"+uuid.NewString()};ctx:=context.WithValue(r.Context(),requestIDKey,id);writer:=&statusWriter{ResponseWriter:w};next.ServeHTTP(writer,r.WithContext(ctx));log.WithFields(logrus.Fields{"request_id":id,"method":r.Method,"path":r.URL.Path,"status":writer.status,"bytes":writer.bytes,"duration_ms":time.Since(started).Milliseconds(),"remote_addr":r.RemoteAddr}).Info("http request")})}}

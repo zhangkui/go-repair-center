@@ -1,0 +1,19 @@
+Verification date: 2026-08-22
+
+Backend:
+- Command: `go test ./...`
+- Result: passed
+
+Frontend:
+- Command: `npm run build`
+- Result: passed
+
+Go size:
+- Files: 142
+- Lines: 6212
+- Rule: exclude `*_test.go`, `tests/`, `vendor/`, `migrations/`
+
+Notes:
+- Frontend build uses `typescript@5.3.3` because `typescript@5.3.0` is not available on npm as of 2026-08-22.
+- The production frontend bundle currently triggers Vite's chunk-size warning because Element Plus and the generic admin shell are bundled together.
+- This verification includes the added dispatch center, approval center and inventory control flows.

@@ -1,0 +1,82 @@
+CREATE TABLE IF NOT EXISTS quotations (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  repair_order_id BIGINT UNSIGNED NOT NULL,
+  version INT NOT NULL,
+  labor_fee DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+  parts_fee DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+  inspection_fee DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+  other_fee DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+  total_amount DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+  valid_until DATETIME NOT NULL,
+  customer_status VARCHAR(32) NOT NULL DEFAULT 'PENDING',
+  approval_status VARCHAR(32) NOT NULL DEFAULT 'NOT_REQUIRED',
+  approved_by BIGINT UNSIGNED NULL,
+  approved_at DATETIME NULL,
+  status VARCHAR(32) NOT NULL DEFAULT 'DRAFT',
+  idempotency_key VARCHAR(64) NOT NULL DEFAULT '',
+  created_by BIGINT UNSIGNED NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at DATETIME NULL,
+  PRIMARY KEY (id),
+  UNIQUE KEY uk_quotations_version_order (repair_order_id, version),
+  UNIQUE KEY uk_quotations_idempotency_key (idempotency_key),
+  KEY idx_quotations_status (status),
+  KEY idx_quotations_customer_status (customer_status),
+  KEY idx_quotations_deleted_at (deleted_at),
+  CONSTRAINT fk_quotations_order FOREIGN KEY (repair_order_id) REFERENCES repair_orders(id) ON DELETE RESTRICT,
+  CONSTRAINT fk_quotations_approved_by FOREIGN KEY (approved_by) REFERENCES users(id) ON DELETE RESTRICT,
+  CONSTRAINT fk_quotations_created_by FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS quotation_items (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  quotation_id BIGINT UNSIGNED NOT NULL,
+  item_type VARCHAR(32) NOT NULL,
+  part_id BIGINT UNSIGNED NULL,
+  name VARCHAR(100) NOT NULL,
+  quantity DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+  unit_price DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+  amount DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+  description VARCHAR(255) NOT NULL DEFAULT '',
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at DATETIME NULL,
+  PRIMARY KEY (id),
+  KEY idx_quotation_items_quotation_id (quotation_id),
+  KEY idx_quotation_items_part_id (part_id),
+  CONSTRAINT fk_quotation_items_quotation FOREIGN KEY (quotation_id) REFERENCES quotations(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS quotation_status_histories (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  quotation_id BIGINT UNSIGNED NOT NULL,
+  from_status VARCHAR(32) NOT NULL,
+  to_status VARCHAR(32) NOT NULL,
+  reason VARCHAR(255) NOT NULL DEFAULT '',
+  changed_by BIGINT UNSIGNED NOT NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at DATETIME NULL,
+  PRIMARY KEY (id),
+  KEY idx_quotation_status_histories_quotation_id (quotation_id),
+  KEY idx_quotation_status_histories_created_at (created_at),
+  CONSTRAINT fk_quotation_status_histories_quotation FOREIGN KEY (quotation_id) REFERENCES quotations(id) ON DELETE RESTRICT,
+  CONSTRAINT fk_quotation_status_histories_user FOREIGN KEY (changed_by) REFERENCES users(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS quotation_version_histories (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  quotation_id BIGINT UNSIGNED NOT NULL,
+  version INT NOT NULL,
+  snapshot JSON NOT NULL,
+  created_by BIGINT UNSIGNED NOT NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at DATETIME NULL,
+  PRIMARY KEY (id),
+  KEY idx_quotation_version_histories_quotation_id (quotation_id),
+  KEY idx_quotation_version_histories_created_at (created_at),
+  CONSTRAINT fk_quotation_version_histories_quotation FOREIGN KEY (quotation_id) REFERENCES quotations(id) ON DELETE RESTRICT,
+  CONSTRAINT fk_quotation_version_histories_user FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

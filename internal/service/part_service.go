@@ -1,0 +1,6 @@
+package service
+import("context";"database/sql";"errors";"go-repair-center/internal/repository";"go-repair-center/internal/repository/mysql")
+type PartService struct{*ResourceService;parts *mysql.PartRepository}
+func NewPartService(repo *mysql.PartRepository)*PartService{return &PartService{ResourceService:NewResourceService(repo,"part","code","name"),parts:repo}}
+func(s *PartService)Use(ctx context.Context,partID int64,quantity int,executionID,userID int64,key string)(repository.Record,error){if key==""{return nil,errors.New("Idempotency-Key required")};var out repository.Record;err:=s.parts.WithTransaction(ctx,func(tx *sql.Tx)error{record,e:=s.parts.UseStock(ctx,tx,partID,quantity,executionID,userID,key);out=record;return e});return out,err}
+func(s *PartService)Adjust(ctx context.Context,partID int64,delta int,reason string,userID int64)(repository.Record,error){if reason==""{return nil,errors.New("adjustment reason required")};return s.parts.AdjustStock(ctx,partID,delta,reason,userID)}
