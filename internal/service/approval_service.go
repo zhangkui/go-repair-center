@@ -40,7 +40,7 @@ func NewApprovalService(quotationThreshold float64, warrantyDays int) *ApprovalS
 }
 
 func (s *ApprovalService) ReviewQuotation(resourceID int64, amount float64, reviewerID int64, approve bool, comment string) ApprovalDecision {
-	needReview := amount > s.quotationThreshold
+	needReview := quotationReviewRequired(amount, s.quotationThreshold)
 	reason := strings.TrimSpace(comment)
 	if reason == "" {
 		if needReview {
