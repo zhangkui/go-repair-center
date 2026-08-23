@@ -1,9 +1,0 @@
-{
-    "bug_id":  "BUG-002",
-    "generated_at":  "2026-08-23",
-    "files":  {
-                  "pre_fix.jsonl":  "520c81b3ca0ed10a1c825ab72a8936ecc78cf4bacb06873311257091f2f6488b",
-                  "post.jsonl":  "85ed0ec4a1ce60e0eb740d36919d684c9027acd76f28558e22efff8371380cee",
-                  "post_pre.jsonl":  "02285d6f582baecb68efa8f20292a0cceae028b5a2e8c43d27816479715eaaf5"
-              }
-}

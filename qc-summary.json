@@ -1,9 +1,0 @@
-{
-    "bug_id":  "BUG-002",
-    "required_verdict":  "clean",
-    "verdicts":  [
-                     "clean",
-                     "clean",
-                     "clean"
-                 ]
-}
