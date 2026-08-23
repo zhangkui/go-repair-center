@@ -101,7 +101,7 @@ func (s *SchedulerService) FilterDue(tasks []ScheduledTask, now time.Time) []Sch
 func (s *SchedulerService) BuildRepairOrderTasks(order repository.Record) []ScheduledTask {
 	items := make([]ScheduledTask, 0, 2)
 	orderID := recordInt64FromRecord(order, "id")
-	if deliveredAt, ok := order["updated_at"].(time.Time); ok {
+	if deliveredAt, ok := repairOrderDeliveryTime(order); ok {
 		items = append(items, s.FeedbackTaskForDelivery(orderID, deliveredAt))
 	}
 	return items
