@@ -25,7 +25,7 @@ func (s *RepairOrderService) Archive(ctx context.Context, id int64) error {
     return s.Delete(ctx, id)
 }
 
-var repair_orderTransitions = map[string][]string{"PENDING":{"DISPATCHED","CANCELLED"},"DISPATCHED":{"WAITING_VISIT","WAITING_DELIVERY","ACCEPTED"},"WAITING_VISIT":{"ACCEPTED","CANCELLED"},"WAITING_DELIVERY":{"ACCEPTED","CANCELLED"},"ACCEPTED":{"COMPLETED","CANCELLED"}}
+var repair_orderTransitions = map[string][]string{"PENDING":{"DISPATCHED","CANCELLED"},"DISPATCHED":{"WAITING_VISIT","WAITING_DELIVERY","ACCEPTED","CANCELLED"},"WAITING_VISIT":{"ACCEPTED","CANCELLED"},"WAITING_DELIVERY":{"ACCEPTED","CANCELLED"},"ACCEPTED":{"COMPLETED","CANCELLED"}}
 
 func (s *RepairOrderService) ChangeStatus(ctx context.Context, id int64, current, next, reason string) (repository.Record, error) {
     if err := ValidateTransition(current, next, repair_orderTransitions); err != nil { return nil, err }

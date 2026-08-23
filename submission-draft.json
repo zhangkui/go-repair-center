@@ -1,0 +1,60 @@
+{
+    "session_id":  "c5d3dd00-2241-404b-89cc-782c9372a317",
+    "bug_id":  "go-repair-center-bug002",
+    "task_type":  "bugfix",
+    "bug_category":  "error",
+    "repo_url":  "https://github.com/zhangkui/go-repair-center/tree/bug002_green",
+    "go_version":  "go 1.23",
+    "user_query":  "现场已派单的维修单在客户明确取消后无法完成取消操作，系统返回状态流转错误，导致订单只能继续进入后续流程。请恢复这类取消请求的正常处理，取消成功时应写入取消状态和原因，同时不能放宽其他不允许的状态变化。",
+    "trajectory":  {
+                       "value":  [
+                                     {
+                                         "file":  "trajectories/pre_fix.jsonl",
+                                         "session_id":  "c5d3dd00-2241-404b-89cc-782c9372a317",
+                                         "size_bytes":  7381,
+                                         "sha256":  "520c81b3ca0ed10a1c825ab72a8936ecc78cf4bacb06873311257091f2f6488b",
+                                         "remote_file_id":  "uploads/2026/08/23/142420-60e9ee1d/pre_fix.jsonl",
+                                         "trajectory_url":  "https://bduse-1304520688.cos.ap-beijing.myqcloud.com/uploads/2026/08/23/142420-60e9ee1d/pre_fix.jsonl",
+                                         "download_http_status":  200,
+                                         "download_size_bytes":  7381,
+                                         "download_sha256":  "520c81b3ca0ed10a1c825ab72a8936ecc78cf4bacb06873311257091f2f6488b",
+                                         "verified":  true
+                                     },
+                                     {
+                                         "file":  "trajectories/post.jsonl",
+                                         "session_id":  "30f1707a-2363-45ac-b851-550584653b59",
+                                         "size_bytes":  194688,
+                                         "sha256":  "85ed0ec4a1ce60e0eb740d36919d684c9027acd76f28558e22efff8371380cee",
+                                         "remote_file_id":  "uploads/2026/08/23/142420-b185015f/post.jsonl",
+                                         "trajectory_url":  "https://bduse-1304520688.cos.ap-beijing.myqcloud.com/uploads/2026/08/23/142420-b185015f/post.jsonl",
+                                         "download_http_status":  200,
+                                         "download_size_bytes":  194688,
+                                         "download_sha256":  "85ed0ec4a1ce60e0eb740d36919d684c9027acd76f28558e22efff8371380cee",
+                                         "verified":  true
+                                     },
+                                     {
+                                         "file":  "trajectories/post_pre.jsonl",
+                                         "session_id":  "48b02e14-f32f-408d-a8e2-5839a6adc2b7",
+                                         "size_bytes":  6537,
+                                         "sha256":  "02285d6f582baecb68efa8f20292a0cceae028b5a2e8c43d27816479715eaaf5",
+                                         "remote_file_id":  "uploads/2026/08/23/142420-c59276a0/post_pre.jsonl",
+                                         "trajectory_url":  "https://bduse-1304520688.cos.ap-beijing.myqcloud.com/uploads/2026/08/23/142420-c59276a0/post_pre.jsonl",
+                                         "download_http_status":  200,
+                                         "download_size_bytes":  6537,
+                                         "download_sha256":  "02285d6f582baecb68efa8f20292a0cceae028b5a2e8c43d27816479715eaaf5",
+                                         "verified":  true
+                                     }
+                                 ],
+                       "Count":  3
+                   },
+    "verify_cmds":  "go test ./scripts/verify -count=1 -run \u0027^TestBug002_BusinessRegression$\u0027",
+    "gold_root_cause":  "See BUG_RECORD.md and the reviewed production diff for the single business root cause.",
+    "success_criteria":  "Post-Pre regression passes and the original valid neighboring behavior remains unchanged.",
+    "verify_result":  {
+                          "pre":  "red",
+                          "post_pre":  "green",
+                          "command":  "go test ./scripts/verify -count=1 -run \u0027^TestBug002_BusinessRegression$\u0027"
+                      },
+    "harness":  "backend=go-test; isolation=workspace; target_cli=claude",
+    "generator_model":  "model_hub/glm-52-coding"
+}

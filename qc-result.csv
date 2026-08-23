@@ -1,0 +1,4 @@
+﻿sample,判定,类别,证据,分数,首条证据说明,动作数,文件
+post,clean,,,0,,69,F:\xm5\delivery-20260823-5m\BUG-002\trajectories\post.jsonl
+post_pre,clean,,,0,,1,F:\xm5\delivery-20260823-5m\BUG-002\trajectories\post_pre.jsonl
+pre_fix,clean,,,0,,1,F:\xm5\delivery-20260823-5m\BUG-002\trajectories\pre_fix.jsonl

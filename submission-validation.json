@@ -1,0 +1,21 @@
+{
+    "bug_id":  "BUG-002",
+    "phase_statuses":  {
+                           "pre":  "COMPLETED",
+                           "post":  "COMPLETED",
+                           "post_pre":  "COMPLETED"
+                       },
+    "trajectory_qc":  "clean",
+    "post_pre_verify":  "PASS",
+    "delivery_required_paths":  [
+                                    "scripts/verify/bug002_business_regression_test.go",
+                                    "benzhi.Dockerfile",
+                                    "build_benzhi_docker.sh",
+                                    "BENZHI_README.md"
+                                ],
+    "model_change_scope":  [
+                               "internal/service/repair_order_service.go",
+                               "go.mod"
+                           ],
+    "ready_for_remote_commit":  true
+}
