@@ -103,6 +103,9 @@ func (s *SecurityService) ClientIP(r *http.Request) string {
 		}
 		if strings.Contains(value, ",") {
 			value = forwardedClientAddress(value)
+			if value == "" {
+				continue
+			}
 		}
 		return s.NormalizeIP(value)
 	}
