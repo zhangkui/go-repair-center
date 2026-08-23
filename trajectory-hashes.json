@@ -1,0 +1,9 @@
+{
+    "bug_id":  "BUG-008",
+    "generated_at":  "2026-08-23",
+    "files":  {
+                  "pre_fix.jsonl":  "59e008c6570b38b68054c066277daca859dde4b336a993b95714092d5e0c53f7",
+                  "post.jsonl":  "5fbb896ed71945638b8eba604116376d2bfd19ce28aad358798e4f7e9331db5e",
+                  "post_pre.jsonl":  "1af0cf126612209f39b7786f70a276f68382b793832de0a46f2a57126257957d"
+              }
+}

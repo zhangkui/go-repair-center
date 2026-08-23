@@ -1,0 +1,38 @@
+[
+    {
+        "file":  "trajectories/pre_fix.jsonl",
+        "session_id":  "67f44a8a-0d46-4e1f-987b-d506e3064d55",
+        "size_bytes":  8256,
+        "sha256":  "59e008c6570b38b68054c066277daca859dde4b336a993b95714092d5e0c53f7",
+        "remote_file_id":  "uploads/2026/08/23/142421-66364621/pre_fix.jsonl",
+        "trajectory_url":  "https://bduse-1304520688.cos.ap-beijing.myqcloud.com/uploads/2026/08/23/142421-66364621/pre_fix.jsonl",
+        "download_http_status":  200,
+        "download_size_bytes":  8256,
+        "download_sha256":  "59e008c6570b38b68054c066277daca859dde4b336a993b95714092d5e0c53f7",
+        "verified":  true
+    },
+    {
+        "file":  "trajectories/post.jsonl",
+        "session_id":  "761968a2-9124-4089-a15b-5920b8156650",
+        "size_bytes":  121218,
+        "sha256":  "5fbb896ed71945638b8eba604116376d2bfd19ce28aad358798e4f7e9331db5e",
+        "remote_file_id":  "uploads/2026/08/23/142421-25e9cc58/post.jsonl",
+        "trajectory_url":  "https://bduse-1304520688.cos.ap-beijing.myqcloud.com/uploads/2026/08/23/142421-25e9cc58/post.jsonl",
+        "download_http_status":  200,
+        "download_size_bytes":  121218,
+        "download_sha256":  "5fbb896ed71945638b8eba604116376d2bfd19ce28aad358798e4f7e9331db5e",
+        "verified":  true
+    },
+    {
+        "file":  "trajectories/post_pre.jsonl",
+        "session_id":  "8862c57d-c67f-4279-83e6-365abd7826e1",
+        "size_bytes":  7045,
+        "sha256":  "1af0cf126612209f39b7786f70a276f68382b793832de0a46f2a57126257957d",
+        "remote_file_id":  "uploads/2026/08/23/142421-0a3bad01/post_pre.jsonl",
+        "trajectory_url":  "https://bduse-1304520688.cos.ap-beijing.myqcloud.com/uploads/2026/08/23/142421-0a3bad01/post_pre.jsonl",
+        "download_http_status":  200,
+        "download_size_bytes":  7045,
+        "download_sha256":  "1af0cf126612209f39b7786f70a276f68382b793832de0a46f2a57126257957d",
+        "verified":  true
+    }
+]

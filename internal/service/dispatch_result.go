@@ -7,8 +7,10 @@ func newBatchDispatchResult(capacity int) *BatchDispatchResult {
 		capacity = 0
 	}
 	return &BatchDispatchResult{
-		Dispatched: make([]repository.Record, 0, capacity),
-		Skipped:    make([]repository.Record, 0),
+		Dispatched:    make([]repository.Record, 0, capacity),
+		Skipped:       make([]repository.Record, 0, capacity),
+		Conflicts:     make([]repository.Record, 0),
+		Notifications: make([]string, 0),
 	}
 }
 
