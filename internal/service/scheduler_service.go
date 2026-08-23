@@ -113,8 +113,11 @@ func (s *SchedulerService) MergeTaskBatches(batches ...[]ScheduledTask) []Schedu
 		total += len(batch)
 	}
 	items := make([]ScheduledTask, 0, total)
+	positions := make(map[string]int, total)
 	for _, batch := range batches {
-		items = appendTaskBatch(items, batch)
+		for _, task := range batch {
+			items = mergeTaskCandidate(items, positions, task)
+		}
 	}
 	return items
 }
