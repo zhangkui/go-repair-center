@@ -1,0 +1,14 @@
+session_id:1734dbad-95aa-4437-a27b-b2b431dac913
+bug_id:go-repair-center-bug015
+task_type:bugfix
+bug_category:error
+repo_url:https://github.com/zhangkui/go-repair-center/tree/bug015_green
+go_version:go 1.22.5; local go version go1.26.1 windows/amd64
+user_query:不需要人工审批的报价决策仍被要求提供审批人，导致正常自动处理被拒绝；真正需要审批且信息完整的记录应继续通过校验。请修复决策校验，使校验条件与是否需要审批一致。
+trajectory:https://bduse-1304520688.cos.ap-beijing.myqcloud.com/uploads/2026/08/23/145840-e6a5ef71/post.jsonl
+verify_cmds:go test ./scripts/verify -count=1 -run '^TestBug015_BusinessRegression$'
+gold_root_cause:生产文件 internal/service/approval_requirements.go 的 approvalRequiresReviewer 被 ApprovalService.Validate 调用，用于决定报价决策是否必须提供审批人；ReviewQuotation 根据金额阈值生成 ApprovalDecision.NeedReview，但原辅助函数无条件返回 true。失效机制：不需要人工审批的低金额决策也被强制进入审批人校验，Validate 因 reviewer id 缺失返回错误，导致自动处理被拒绝；真正需要审批且信息完整的决策则应继续通过原有校验。
+success_criteria:不需要人工审批的报价决策即使没有 reviewer id 也必须通过 Validate；需要审批的报价决策仍必须提供有效审批人和审批原因，其他报价校验和决策字段保持不变。验证命令 go test ./scripts/verify -count=1 -run '^TestBug015_BusinessRegression$'；Pre 必须为 red，Bugfix 的 Post-Pre 必须使用同一命令并为 green。
+verify_result:{"pre_fix":{"trajectory_url":"https://bduse-1304520688.cos.ap-beijing.myqcloud.com/uploads/2026/08/23/145839-ff8f029d/pre_fix.jsonl","session_id":"e0e1bb29-289c-45c0-be13-8acbc2182f02","result":"red"},"post_fix":{"trajectory_url":"https://bduse-1304520688.cos.ap-beijing.myqcloud.com/uploads/2026/08/23/145840-cde00804/post_pre.jsonl","session_id":"e68cd84f-2b4a-46d0-950a-f02a8d2c431d","result":"green"}}
+harness:backend=go-test; isolation=workspace; target_cli=claude; target_cli_version=2.1.228; model=model_hub/glm-52-coding; local_go=go version go1.26.1 windows/amd64
+generator_model:model_hub/glm-52-coding
