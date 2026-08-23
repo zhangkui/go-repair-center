@@ -219,7 +219,7 @@ func (s *ApprovalService) ReviewerWorkload(decisions []ApprovalDecision) map[int
 func (s *ApprovalService) NeedsReview(resourceType string, numericValue float64) bool {
 	switch resourceType {
 	case "quotation":
-		return numericValue > s.quotationThreshold
+		return quotationReviewRequired(numericValue, s.quotationThreshold)
 	case "warranty":
 		return int(numericValue) > s.warrantyDays
 	case "rework":
