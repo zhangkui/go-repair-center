@@ -5,10 +5,10 @@ bug_category: error
 repo_url: https://github.com/zhangkui/go-repair-center/tree/bug002_green
 go_version: go 1.23
 user_query: 现场已派单的维修单在客户明确取消后无法完成取消操作，系统返回状态流转错误，导致订单只能继续进入后续流程。请恢复这类取消请求的正常处理，取消成功时应写入取消状态和原因，同时不能放宽其他不允许的状态变化。
-trajectory:   
+trajectory: 
 verify_cmds: go test ./scripts/verify -count=1 -run '^TestBug002_BusinessRegression$'
 gold_root_cause: See BUG_RECORD.md and the reviewed production diff for the single business root cause.
 success_criteria: Post-Pre regression passes and the original valid neighboring behavior remains unchanged.
-verify_result: System.Collections.Specialized.OrderedDictionary
+verify_result: pre=red; post_pre=green; command=go test ./scripts/verify -count=1 -run '^TestBug002_BusinessRegression$'
 harness: backend=go-test; isolation=workspace; target_cli=claude
 generator_model: model_hub/glm-52-coding
