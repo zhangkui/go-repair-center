@@ -1,0 +1,14 @@
+session_id:56260170-369a-4c4c-9bea-40c33df0ac10
+bug_id:go-repair-center-bug020
+task_type:bugfix
+bug_category:nil
+repo_url:https://github.com/zhangkui/go-repair-center/tree/bug020_green
+go_version:go 1.22.5; local go version go1.26.1 windows/amd64
+user_query:通知文本渲染时丢失订单标识和通知类型等元数据，运维人员无法从文本确认消息所属工单。请修复文本渲染，保留标题、正文、接收方和全部元数据，不要改变已有文本字段。
+trajectory:https://bduse-1304520688.cos.ap-beijing.myqcloud.com/uploads/2026/08/23/144344-6e4ee75f/post.jsonl
+verify_cmds:go test ./scripts/verify -count=1 -run '^TestBug020_BusinessRegression$'
+gold_root_cause:生产文件 internal/service/notification_metadata.go 的 renderNotificationMetadata 被 NotificationService.RenderPlainText 调用，用来把 NotificationMessage.Metadata 追加到纯文本行列表；原实现始终返回空 map，因此订单标识和通知类型不会进入最终文本。失效机制：RenderPlainText 虽然遍历元数据渲染流程，但辅助函数丢弃了输入 Metadata，导致输出只保留标题、正文、接收方和时间，调用方无法从文本识别所属工单和通知类型。
+success_criteria:RenderPlainText 必须保留标题、正文、接收方和 scheduled_at，并把 NotificationMessage.Metadata 中的订单标识、通知类型等全部键值追加到文本；没有元数据时原有文本字段保持不变，已有文本格式和顺序不被破坏。验证命令 go test ./scripts/verify -count=1 -run '^TestBug020_BusinessRegression$'；Pre 必须为 red，Bugfix 的 Post-Pre 必须使用同一命令并为 green。
+verify_result:{"pre_fix":{"trajectory_url":"https://bduse-1304520688.cos.ap-beijing.myqcloud.com/uploads/2026/08/23/144343-4e7ef6af/pre_fix.jsonl","session_id":"4aa8d204-101c-4bb4-b2aa-3de140e87f6a","result":"red"},"post_fix":{"trajectory_url":"https://bduse-1304520688.cos.ap-beijing.myqcloud.com/uploads/2026/08/23/144344-2e7972ed/post_pre.jsonl","session_id":"a435de1c-3a1d-4508-a72d-a9c4f07a2718","result":"green"}}
+harness:backend=go-test; isolation=workspace; target_cli=claude; target_cli_version=2.1.228; model=model_hub/glm-52-coding; local_go=go version go1.26.1 windows/amd64
+generator_model:model_hub/glm-52-coding
