@@ -21,10 +21,10 @@ type SessionInfo struct {
 }
 
 type SessionSummary struct {
-	UserID            int64         `json:"user_id"`
-	ActiveSessionCount int          `json:"active_session_count"`
-	ExpiredSessionCount int         `json:"expired_session_count"`
-	Sessions          []SessionInfo `json:"sessions"`
+	UserID              int64         `json:"user_id"`
+	ActiveSessionCount  int           `json:"active_session_count"`
+	ExpiredSessionCount int           `json:"expired_session_count"`
+	Sessions            []SessionInfo `json:"sessions"`
 }
 
 func NewSessionService(db *sql.DB, cache *CacheService) *SessionService {
@@ -87,6 +87,9 @@ UPDATE refresh_tokens
 SET revoked_at = NOW(), updated_at = NOW()
 WHERE id = ? AND revoked_at IS NULL AND deleted_at IS NULL
 `, sessionID)
+	if err == nil && s.cache != nil {
+		_ = s.cache.Delete(ctx, SingleSessionSummaryKey(sessionID))
+	}
 	return err
 }
 
