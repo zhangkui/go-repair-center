@@ -155,7 +155,7 @@ func (s *ApprovalService) Summarize(decisions []ApprovalDecision) PendingApprova
 func (s *ApprovalService) FilterPending(decisions []ApprovalDecision) []ApprovalDecision {
 	items := make([]ApprovalDecision, 0, len(decisions))
 	for _, decision := range decisions {
-		if decision.NeedReview && !decision.Approved {
+		if isPendingApproval(decision) {
 			items = append(items, decision)
 		}
 	}
