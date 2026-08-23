@@ -11,10 +11,10 @@ import (
 )
 
 type PasswordPolicy struct {
-	MinLength       int  `json:"min_length"`
-	RequireUpper    bool `json:"require_upper"`
-	RequireDigit    bool `json:"require_digit"`
-	RequireSpecial  bool `json:"require_special"`
+	MinLength      int  `json:"min_length"`
+	RequireUpper   bool `json:"require_upper"`
+	RequireDigit   bool `json:"require_digit"`
+	RequireSpecial bool `json:"require_special"`
 }
 
 type SecurityService struct {
@@ -102,7 +102,7 @@ func (s *SecurityService) ClientIP(r *http.Request) string {
 			continue
 		}
 		if strings.Contains(value, ",") {
-			value = strings.TrimSpace(strings.Split(value, ",")[0])
+			value = forwardedClientAddress(value)
 		}
 		return s.NormalizeIP(value)
 	}
