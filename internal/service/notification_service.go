@@ -121,7 +121,7 @@ func (s *NotificationService) RenderPlainText(message NotificationMessage) strin
 		"recipient: " + message.Recipient,
 		"scheduled_at: " + message.ScheduledAt.Format(time.RFC3339),
 	}
-	for key, value := range message.Metadata {
+	for key, value := range renderNotificationMetadata(message) {
 		lines = append(lines, key+": "+value)
 	}
 	return strings.Join(lines, "\n")
