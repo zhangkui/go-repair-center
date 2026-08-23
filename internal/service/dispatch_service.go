@@ -47,12 +47,7 @@ func (s *DispatchService) CheckConflicts(ctx context.Context, technicianID int64
 }
 
 func (s *DispatchService) BatchDispatch(ctx context.Context, request BatchDispatchRequest) (*BatchDispatchResult, error) {
-	result := &BatchDispatchResult{
-		Dispatched:    make([]repository.Record, 0, len(request.OrderIDs)),
-		Skipped:       make([]repository.Record, 0),
-		Conflicts:     make([]repository.Record, 0),
-		Notifications: make([]string, 0),
-	}
+	result := newBatchDispatchResult(len(request.OrderIDs))
 	if len(request.OrderIDs) == 0 {
 		return result, nil
 	}
