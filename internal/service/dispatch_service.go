@@ -57,7 +57,7 @@ func (s *DispatchService) BatchDispatch(ctx context.Context, request BatchDispat
 		return nil, err
 	}
 	if len(conflicts) > 0 {
-		result.Conflicts = conflicts
+		result.addConflicts(conflicts)
 		return result, nil
 	}
 
@@ -96,7 +96,7 @@ func (s *DispatchService) BatchDispatch(ctx context.Context, request BatchDispat
 				request.TechnicianName,
 				request.AppointmentTime,
 			))
-			result.Notifications = append(result.Notifications, fmt.Sprintf("queued:%v", item["order_number"]))
+			result.addNotification(fmt.Sprintf("queued:%v", item["order_number"]))
 		}
 		_ = s.notifications.QueueMany(ctx, notices)
 	}
