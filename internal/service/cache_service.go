@@ -101,8 +101,9 @@ func (s *CacheService) WithLock(ctx context.Context, key string, ttl time.Durati
 	if err != nil {
 		return err
 	}
-	defer lock.Release(ctx)
-	return fn()
+	operationErr := fn()
+	releaseErr := lock.Release(ctx)
+	return CombineLockErrors(operationErr, releaseErr)
 }
 
 func (s *CacheService) BuildKey(parts ...string) string {
