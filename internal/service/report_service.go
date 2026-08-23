@@ -17,12 +17,12 @@ type ReportService struct {
 }
 
 type RevenueReport struct {
-	PeriodStart         time.Time               `json:"period_start"`
-	PeriodEnd           time.Time               `json:"period_end"`
-	Revenue             map[string]float64      `json:"revenue"`
-	RepairTrend         []mysql.DailyCount      `json:"repair_trend"`
-	Satisfaction        []mysql.SatisfactionStat `json:"satisfaction"`
-	TechnicianRanking   []mysql.TechnicianStat  `json:"technician_ranking"`
+	PeriodStart       time.Time                `json:"period_start"`
+	PeriodEnd         time.Time                `json:"period_end"`
+	Revenue           map[string]float64       `json:"revenue"`
+	RepairTrend       []mysql.DailyCount       `json:"repair_trend"`
+	Satisfaction      []mysql.SatisfactionStat `json:"satisfaction"`
+	TechnicianRanking []mysql.TechnicianStat   `json:"technician_ranking"`
 }
 
 func NewReportService(analytics *mysql.AnalyticsRepo, cache *CacheService) *ReportService {
@@ -67,6 +67,7 @@ func (s *ReportService) RevenueAndPerformance(ctx context.Context, days int) (*R
 		Satisfaction:      satisfaction,
 		TechnicianRanking: ranking,
 	}
+	NormalizeReportSlices(result)
 	if s.cache != nil {
 		_ = s.cache.SetJSON(ctx, cacheKey, result, 5*time.Minute)
 	}
