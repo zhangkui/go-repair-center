@@ -15,14 +15,14 @@ type InventoryControlService struct {
 }
 
 type RestockItem struct {
-	PartID             int64   `json:"part_id"`
-	Code               string  `json:"code"`
-	Name               string  `json:"name"`
-	StockQuantity      int     `json:"stock_quantity"`
-	SafetyStock        int     `json:"safety_stock"`
-	SuggestedQuantity  int     `json:"suggested_quantity"`
-	UnitPrice          float64 `json:"unit_price"`
-	EstimatedCost      float64 `json:"estimated_cost"`
+	PartID            int64   `json:"part_id"`
+	Code              string  `json:"code"`
+	Name              string  `json:"name"`
+	StockQuantity     int     `json:"stock_quantity"`
+	SafetyStock       int     `json:"safety_stock"`
+	SuggestedQuantity int     `json:"suggested_quantity"`
+	UnitPrice         float64 `json:"unit_price"`
+	EstimatedCost     float64 `json:"estimated_cost"`
 }
 
 func NewInventoryControlService(db *sql.DB, parts *PartService) *InventoryControlService {
@@ -164,27 +164,15 @@ func (s *InventoryControlService) Summary(ctx context.Context) (map[string]any, 
 		totalEstimatedCost += item.EstimatedCost
 	}
 	return map[string]any{
-		"low_stock_count":      len(lowStock),
-		"restock_item_count":   len(suggestions),
+		"low_stock_count":        len(lowStock),
+		"restock_item_count":     len(suggestions),
 		"estimated_restock_cost": totalEstimatedCost,
-		"suggestions":          suggestions,
+		"suggestions":            suggestions,
 	}, nil
 }
 
 func recordInt(value any) int {
-	switch typed := value.(type) {
-	case int:
-		return typed
-	case int64:
-		return int(typed)
-	case float64:
-		return int(typed)
-	case []byte:
-		var parsed int
-		fmt.Sscanf(string(typed), "%d", &parsed)
-		return parsed
-	}
-	return 0
+	return parseInventoryQuantity(value)
 }
 
 func recordFloatValue(value any) float64 {
