@@ -115,10 +115,10 @@ func (s *ApprovalService) Validate(decision ApprovalDecision) error {
 	if decision.ResourceID <= 0 {
 		return fmt.Errorf("resource id is required")
 	}
-	if decision.NeedReview && decision.ReviewerID <= 0 {
+	if approvalRequiresReviewer(decision) && decision.ReviewerID <= 0 {
 		return fmt.Errorf("reviewer id is required")
 	}
-	if decision.NeedReview && strings.TrimSpace(decision.Reason) == "" {
+	if approvalRequiresReviewer(decision) && strings.TrimSpace(decision.Reason) == "" {
 		return fmt.Errorf("review reason is required")
 	}
 	return nil
