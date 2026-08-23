@@ -11,10 +11,10 @@ import (
 )
 
 type PasswordPolicy struct {
-	MinLength       int  `json:"min_length"`
-	RequireUpper    bool `json:"require_upper"`
-	RequireDigit    bool `json:"require_digit"`
-	RequireSpecial  bool `json:"require_special"`
+	MinLength      int  `json:"min_length"`
+	RequireUpper   bool `json:"require_upper"`
+	RequireDigit   bool `json:"require_digit"`
+	RequireSpecial bool `json:"require_special"`
 }
 
 type SecurityService struct {
@@ -164,7 +164,7 @@ func (s *SecurityService) BuildAuditFingerprint(username string, when time.Time)
 }
 
 func (s *SecurityService) RedactMap(values map[string]string) map[string]string {
-	redacted := make(map[string]string, len(values))
+	redacted := prepareRedactionResult(values)
 	for key, value := range values {
 		lowerKey := strings.ToLower(key)
 		switch {
