@@ -5,10 +5,10 @@ bug_category: slice
 repo_url: https://github.com/zhangkui/go-repair-center/tree/bug008_green
 go_version: go 1.23
 user_query: 提交空的批量派单请求后接口虽然不报错，但返回结果中的多个分类集合为 nil，调用方无法按正常结果协议遍历和序列化。请修复空批量的结果构造，保证返回结构完整，同时不改变有工单时的派单、跳过和冲突统计。
-trajectory:   
+trajectory: 
 verify_cmds: go test ./scripts/verify -count=1 -run '^TestBug008_BusinessRegression$'
 gold_root_cause: See BUG_RECORD.md and the reviewed production diff for the single business root cause.
 success_criteria: Post-Pre regression passes and the original valid neighboring behavior remains unchanged.
-verify_result: System.Collections.Specialized.OrderedDictionary
+verify_result: pre=red; post_pre=green; command=go test ./scripts/verify -count=1 -run '^TestBug008_BusinessRegression$'
 harness: backend=go-test; isolation=workspace; target_cli=claude
 generator_model: model_hub/glm-52-coding
