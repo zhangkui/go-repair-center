@@ -21,10 +21,10 @@ type SessionInfo struct {
 }
 
 type SessionSummary struct {
-	UserID            int64         `json:"user_id"`
-	ActiveSessionCount int          `json:"active_session_count"`
-	ExpiredSessionCount int         `json:"expired_session_count"`
-	Sessions          []SessionInfo `json:"sessions"`
+	UserID              int64         `json:"user_id"`
+	ActiveSessionCount  int           `json:"active_session_count"`
+	ExpiredSessionCount int           `json:"expired_session_count"`
+	Sessions            []SessionInfo `json:"sessions"`
 }
 
 func NewSessionService(db *sql.DB, cache *CacheService) *SessionService {
@@ -108,6 +108,8 @@ func (s *SessionService) Summary(ctx context.Context, userID int64) (*SessionSum
 		cached := &SessionSummary{}
 		if ok, err := s.cache.GetJSON(ctx, cacheKey, cached); err == nil && ok {
 			return cached, nil
+		} else if err != nil && ShouldAbortSessionSummary(err) {
+			return nil, err
 		}
 	}
 
