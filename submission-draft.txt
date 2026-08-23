@@ -1,14 +1,14 @@
-session_id: 67f44a8a-0d46-4e1f-987b-d506e3064d55
-bug_id: go-repair-center-bug008
-task_type: bugfix
-bug_category: slice
-repo_url: https://github.com/zhangkui/go-repair-center/tree/bug008_green
-go_version: go 1.23
-user_query: 提交空的批量派单请求后接口虽然不报错，但返回结果中的多个分类集合为 nil，调用方无法按正常结果协议遍历和序列化。请修复空批量的结果构造，保证返回结构完整，同时不改变有工单时的派单、跳过和冲突统计。
-trajectory: 
-verify_cmds: go test ./scripts/verify -count=1 -run '^TestBug008_BusinessRegression$'
-gold_root_cause: See BUG_RECORD.md and the reviewed production diff for the single business root cause.
-success_criteria: Post-Pre regression passes and the original valid neighboring behavior remains unchanged.
-verify_result: pre=red; post_pre=green; command=go test ./scripts/verify -count=1 -run '^TestBug008_BusinessRegression$'
-harness: backend=go-test; isolation=workspace; target_cli=claude
-generator_model: model_hub/glm-52-coding
+session_id:761968a2-9124-4089-a15b-5920b8156650
+bug_id:go-repair-center-bug008
+task_type:bugfix
+bug_category:slice
+repo_url:https://github.com/zhangkui/go-repair-center/tree/bug008_green
+go_version:go 1.22.5; local go version go1.26.1 windows/amd64
+user_query:提交空的批量派单请求后接口虽然不报错，但返回结果中的多个分类集合为 nil，调用方无法按正常结果协议遍历和序列化。请修复空批量的结果构造，保证返回结构完整，同时不改变有工单时的派单、跳过和冲突统计。
+trajectory:https://bduse-1304520688.cos.ap-beijing.myqcloud.com/uploads/2026/08/23/142421-25e9cc58/post.jsonl
+verify_cmds:go test ./scripts/verify -count=1 -run '^TestBug008_BusinessRegression$'
+gold_root_cause:生产文件 internal/service/dispatch_result.go 的 newBatchDispatchResult 创建 BatchDispatchResult，批量派单服务随后通过 addConflicts 和 addNotification 向结果对象追加冲突记录与通知；原实现只初始化 Dispatched 和 Skipped，未初始化 Conflicts 与 Notifications。失效机制：空批量请求直接返回结果对象时，这两个字段保持 nil，调用方获得的 JSON 结构缺少完整的空集合；有记录时 append 虽可工作，但空输入无法满足统一结果协议。
+success_criteria:空批量派单返回的 BatchDispatchResult 中 Dispatched、Skipped、Conflicts、Notifications 必须都是可遍历和可序列化的非 nil 空集合；包含工单时原有去重、跳过、冲突统计和通知顺序保持不变。验证命令 go test ./scripts/verify -count=1 -run '^TestBug008_BusinessRegression$'；Pre 必须为 red，Bugfix 的 Post-Pre 必须使用同一命令并为 green。
+verify_result:{"pre_fix":{"trajectory_url":"https://bduse-1304520688.cos.ap-beijing.myqcloud.com/uploads/2026/08/23/142421-66364621/pre_fix.jsonl","session_id":"67f44a8a-0d46-4e1f-987b-d506e3064d55","result":"red"},"post_fix":{"trajectory_url":"https://bduse-1304520688.cos.ap-beijing.myqcloud.com/uploads/2026/08/23/142421-0a3bad01/post_pre.jsonl","session_id":"8862c57d-c67f-4279-83e6-365abd7826e1","result":"green"}}
+harness:backend=go-test; isolation=workspace; target_cli=claude; target_cli_version=2.1.228; model=model_hub/glm-52-coding; local_go=go version go1.26.1 windows/amd64
+generator_model:model_hub/glm-52-coding
