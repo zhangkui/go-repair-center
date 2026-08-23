@@ -53,7 +53,11 @@ func (s *ResourceService) Update(ctx context.Context, id int64, input repository
 	if err := s.validate(input, false); err != nil {
 		return nil, err
 	}
-	return s.repo.Update(ctx, id, s.filterUpdate(input))
+	filtered := s.filterUpdate(input)
+	if len(filtered) == 0 {
+		return nil, fmt.Errorf("%w: no writable fields", ErrValidation)
+	}
+	return s.repo.Update(ctx, id, filtered)
 }
 func (s *ResourceService) Delete(ctx context.Context, id int64) error {
 	if id <= 0 {

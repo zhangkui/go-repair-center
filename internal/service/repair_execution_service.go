@@ -13,10 +13,10 @@ func NewRepairExecutionService(repo repository.CRUDRepository) *RepairExecutionS
 	resource := NewResourceService(repo, "repair_execution", "repair_order_id", "technician_id").LimitUpdates(
 		"technician_id",
 		"fault_code_id",
-		"created_at",
 		"started_at",
 		"completed_at",
 		"status",
+		"diagnosis",
 	)
 	return &RepairExecutionService{ResourceService: resource}
 }
