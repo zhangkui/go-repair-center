@@ -81,10 +81,7 @@ func (s *OrderNumberService) Parse(value string) (*ParsedOrderNumber, error) {
 }
 
 func (s *OrderNumberService) NormalizeIdempotencyKey(value string) string {
-	value = strings.TrimSpace(strings.ToLower(value))
-	value = strings.ReplaceAll(value, " ", "-")
-	value = strings.ReplaceAll(value, "_", "-")
-	return strings.Trim(value, "-")
+	return normalizeIdempotencyKey(value)
 }
 
 func (s *OrderNumberService) BuildDispatchReference(orderNumber string, technicianID int64) string {
