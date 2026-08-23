@@ -136,5 +136,5 @@ func (s *NotificationService) BuildBulkDispatchNotices(orderNumbers []string, te
 }
 
 func (s *NotificationService) NotificationChannels() []string {
-	return []string{"SYSTEM", "SMS", "EMAIL", "WEBHOOK"}
+	return availableNotificationChannels()
 }
