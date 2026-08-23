@@ -108,8 +108,11 @@ func (s *SessionService) Summary(ctx context.Context, userID int64) (*SessionSum
 		cached := &SessionSummary{}
 		if ok, err := s.cache.GetJSON(ctx, cacheKey, cached); err == nil && ok {
 			return cached, nil
-		} else if err != nil && ShouldAbortSessionSummary(err) {
-			return nil, err
+		} else if err != nil {
+			normalizedErr := NormalizeSessionSummaryCacheError(err)
+			if normalizedErr != nil && ShouldAbortSessionSummary(normalizedErr) {
+				return nil, normalizedErr
+			}
 		}
 	}
 
