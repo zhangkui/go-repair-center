@@ -71,7 +71,7 @@ func (s *NotificationService) BuildFeedbackReminder(orderNumber string, schedule
 		Channel:     "SYSTEM",
 		Title:       "Feedback Reminder",
 		Body:        fmt.Sprintf("Feedback for order %s is due at %s", orderNumber, scheduledAt.Format("2006-01-02 15:04")),
-		Recipient:   "service-team",
+		Recipient:   feedbackReminderRecipient(),
 		ScheduledAt: scheduledAt,
 		Metadata: map[string]string{
 			"order_number": orderNumber,
